@@ -119,12 +119,13 @@ namespace ProjetLinxya
                     }
                     softwaresListBox.SetItemCheckState(softwaresListBox.SelectedIndex, CheckState.Checked);
 
-                    String[] parsedItem = listBoxSelectedSoftwares.SelectedItem.ToString().Split('\t');
-                    if (parsedItem.Contains(softwaresListBox.SelectedItem))
+                    //String[] parsedItem = listBoxSelectedSoftwares.SelectedItem.ToString().Split('\t');
+                    if (listBoxSelectedSoftwares.Items.Contains(softwaresListBox.SelectedItem))
                     { }
                     else
                         listBoxSelectedSoftwares.Items.Add(softwaresListBox.SelectedItem.ToString() + " \t " + keysListBox.SelectedItem.ToString());
                 }
+
                 /*if (e.CurrentValue == CheckState.Unchecked)
                 {
                     if (keysListBox.CheckedItems.Count == 0)
@@ -143,6 +144,7 @@ namespace ProjetLinxya
         private void softwaresListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             
+               
         }
             
     }  
