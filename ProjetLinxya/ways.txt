@@ -1,0 +1,2 @@
+﻿VMware Workstation;Software\Wow6432Node\VMware, Inc.\VMware Workstation\License.ws.10.0.e2.201303;Serial
+Microsoft Visual Studio Professional 2013;Software\Wow6432Node\Microsoft\VisualStudio\12.0\Registration\2000.0x0000;PIDKEY
