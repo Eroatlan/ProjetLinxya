@@ -20,7 +20,7 @@ namespace ProjetLinxya
             MainForm mainForm = new MainForm();
 
             Application.Run(mainForm);
-            mainForm.Run();
+            
         }
     }
 }

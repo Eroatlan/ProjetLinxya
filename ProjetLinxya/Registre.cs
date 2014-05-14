@@ -91,7 +91,6 @@ namespace ProjetLinxya
                     //Console.ReadLine();
                     return (null);
                 }
-                RegistryRights regR = new RegistryRights();
                 myRegKey = myRegKey.OpenSubKey(regPath);
                 temp = myRegKey;
 

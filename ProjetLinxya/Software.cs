@@ -69,7 +69,8 @@ namespace ProjetLinxya
                 {
                     sKeys = sKeys + " => " + k.getValue() + " avec poids: " + k.getWeight();
                 }
-                ret = "Entry ==> Name : " + this.name + " - Vendor : " + this.vendor + " - Keys : " + sKeys;
+                //ret = "Entry ==> Name : " + this.name + " - Vendor : " + this.vendor + " - Keys : " + sKeys;
+                ret = this.name;
                 return ret;
             }
             else return null;
