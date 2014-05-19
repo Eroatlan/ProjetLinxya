@@ -19,6 +19,7 @@ namespace ProjetLinxya
     {
         private static Registre reg;
         private static SoftList softList;
+        private static SoftList selectedList = new SoftList();
 
         public MainForm()
         {
@@ -86,8 +87,9 @@ namespace ProjetLinxya
 
         private void launchButton_Click(object sender, EventArgs e)
         {
+            this.launchButton.Visible = false;
+            MessageBox.Show("Traitement en cours.", "Parcours du registre", MessageBoxButtons.OK);
             this.Run();
-            //this.softwaresListBox.
         }
 
         private void softwaresListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -96,9 +98,15 @@ namespace ProjetLinxya
             {
                 this.keysListBox.Items.Clear();
                 Software s = softList.getSoftByName(this.softwaresListBox.SelectedItem.ToString());
+                int it = 0;
                 foreach (WeightedKey wk in s.getKeys())
                 {
                     this.keysListBox.Items.Add(wk);
+                    if (s.getFinalKey().getValue() == wk.getValue())
+                    {
+                        this.keysListBox.SetItemCheckState(it, CheckState.Checked);
+                    }
+                    it++;
                 }
             }
             catch (Exception ex)
@@ -107,6 +115,8 @@ namespace ProjetLinxya
 
         private void keysListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
+            if (e.CurrentValue == CheckState.Unchecked)
+            {
                 if (e.Index == keysListBox.SelectedIndex)
                 {
                     if (keysListBox.CheckedItems.Count > 0)
@@ -118,34 +128,48 @@ namespace ProjetLinxya
                         }
                     }
                     softwaresListBox.SetItemCheckState(softwaresListBox.SelectedIndex, CheckState.Checked);
+                    String softName = softwaresListBox.SelectedItem.ToString();
 
-                    //String[] parsedItem = listBoxSelectedSoftwares.SelectedItem.ToString().Split('\t');
-                    if (listBoxSelectedSoftwares.Items.Contains(softwaresListBox.SelectedItem))
-                    { }
-                    else
-                        listBoxSelectedSoftwares.Items.Add(softwaresListBox.SelectedItem.ToString() + " \t " + keysListBox.SelectedItem.ToString());
+                    softList.setFinalKey(softName, softList.getSoftByName(softName).getKeyByName(keysListBox.SelectedItem.ToString()));
+                    
+                    if (!(selectedList.getNames().Contains(softName)))
+                        selectedList.addSoft(softList.getSoftByName(softName));
                 }
-
-                /*if (e.CurrentValue == CheckState.Unchecked)
+            }
+            else
+            {
+                if (softwaresListBox.CheckedItems.Count == 1)
                 {
-                    if (keysListBox.CheckedItems.Count == 0)
-                    {
-                        try
-                        {
-                            listBoxSelectedSoftwares.Items.Remove(softwaresListBox.SelectedItem);
-                        }
-                        catch (Exception exc)
-                        { }
-                    }
-                }*/
+                    softwaresListBox.SetItemCheckState(softwaresListBox.SelectedIndex, CheckState.Unchecked);
+                }
+            }
+
+            displaySelected();    
             
+        }
+
+        private void displaySelected ()
+        {
+            listBoxSelectedSoftwares.Items.Clear();
+            foreach (Software soft in selectedList.getList())
+            {
+                listBoxSelectedSoftwares.Items.Add(soft.getName());
+            }
         }
 
         private void softwaresListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            
-               
+            if (e.CurrentValue == CheckState.Checked)
+            {
+                selectedList.removeByName(softwaresListBox.SelectedItem.ToString());
+                displaySelected();
+            }
+            else
+            {
+                softwaresListBox.SetItemCheckState(softwaresListBox.SelectedIndex, CheckState.Unchecked);
+            }
         }
+
             
     }  
 }

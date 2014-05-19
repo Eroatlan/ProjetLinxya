@@ -54,8 +54,28 @@ namespace ProjetLinxya
                 return null;
             }
             else return null;
-
         }
+
+        public void removeByName (String name)
+        {
+            if (match(name))
+            {
+                foreach (Software s in this.list)
+                {
+                    try
+                    {
+                        if (s.getName().Equals(name))
+                        {
+                            list.Remove(s);
+                            return;
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                }
+            }
+        }
+
         public void addSoft(Software soft)
         {
             this.list.Add(soft);
@@ -124,6 +144,18 @@ namespace ProjetLinxya
                             r.addKey(k);
                         }
                     }
+                }
+            }
+        }
+
+        public void setFinalKey(String softName, WeightedKey finalKey)
+        {
+            foreach (Software soft in this.list)
+            {
+                if (soft.getName().Equals(softName))
+                {
+                    soft.setFinalKey(finalKey);
+                    return;
                 }
             }
         }
