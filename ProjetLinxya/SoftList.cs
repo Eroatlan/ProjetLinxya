@@ -10,21 +10,21 @@ namespace ProjetLinxya
     {
         private List<Software> list;
 
-        //implementation of List constructor
+        //Constructeur de liste de software
         public SoftList()
             : base()
         {
             this.list = new List<Software>();
         }
 
-        //method to tell if a value exists with the given name in the list
+        //Méthode permettant de retourner si une valeur existe au nom indiqué dans la liste
         public bool match(String name)
         {
             foreach (Software soft in this.list)
             {
                 try
                 {
-                    if (soft.getName().Equals(name))
+                    if (soft.getName().Contains(name) || name.Contains(soft.getName()))
                     {
                         return true;
                     }
@@ -34,7 +34,8 @@ namespace ProjetLinxya
             }
             return false;
         }
-        //method that returns the Software with a given name. Returns null if it doesn't exist
+
+        //méthode retournant le software correspondant au nom donné en paramètre, null sinon
         public Software getSoftByName(String name)
         {
             if (match(name))
@@ -43,7 +44,7 @@ namespace ProjetLinxya
                 {
                     try
                     {
-                        if (s.getName().Equals(name))
+                        if (s.getName().Contains(name) || name.Contains(s.getName()))
                         {
                             return s;
                         }
@@ -56,6 +57,7 @@ namespace ProjetLinxya
             else return null;
         }
 
+        //Méthode permettant de supprimer le software au nom indiqué parmis ceux de la liste
         public void removeByName (String name)
         {
             if (match(name))
@@ -84,6 +86,7 @@ namespace ProjetLinxya
         public List<Software> getList()
         { return this.list; }
 
+        //Méthode retournant la liste des noms de softwares dans la liste courante
         public List<String> getNames()
         {
             List<String> names = new List<String>();
@@ -98,6 +101,7 @@ namespace ProjetLinxya
             }
             return names;
         }
+
         //Cette méthode appelle tout ce qui est nécessaire dans le premier tour de boucle: lecture du dictionnaire pour accès aux données.
         public void firstTurn()
         {
@@ -116,15 +120,17 @@ namespace ProjetLinxya
                 }
             }
         }
+
         //Cette méthode est celle qui permet le second tour: recherche dynamique dans le registre de clés CD.
         public void secondTurn()
         {
+            
             //Définition des variables registre et guessList qui sont nécessaires.
             Registre reg = new Registre();
             List<RegGuess> GuessList = new List<RegGuess>();
             //Tour du registre complet:
             //Récupération des entrées registres qui pourraient correspondre avec ce que l'on attend
-            GuessList = reg.LectureReg(this.getNames());
+            GuessList = reg.LectureReg(this.getNames(), getVendors());
             foreach (RegGuess guess in GuessList)
             {
                 foreach (WeightedKey k in Comp.regGuessTest(guess))
@@ -132,7 +138,6 @@ namespace ProjetLinxya
                     Software r = this.getSoftByName(guess.getName());
                     if (!(r == null))
                     {
-
                         //Si on n'a  pas déjà trouvé une clé avec 100% de chance
                         if (!r.IsCompleted())
                         {
@@ -147,7 +152,7 @@ namespace ProjetLinxya
                 }
             }
         }
-
+        
         public void setFinalKey(String softName, WeightedKey finalKey)
         {
             foreach (Software soft in this.list)
@@ -158,6 +163,21 @@ namespace ProjetLinxya
                     return;
                 }
             }
+        }
+
+        public List<String> getVendors()
+        {
+            List<String> res = new List<string>();
+            foreach (Software soft in this.list)
+            {
+                try
+                {
+                    res.Add(soft.getVendor());
+                }
+                catch (Exception cc)
+                { }
+            }
+            return res;
         }
     }
 }

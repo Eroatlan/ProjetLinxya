@@ -34,7 +34,7 @@ namespace ProjetLinxya
         }
 
         //Fonction initiale pour la lecture de registre (sans paramètre) appelle la version surchargé pour la suite.
-        public List<RegGuess> LectureReg(List<String> softList)
+        public List<RegGuess> LectureReg(List<String> softList, List<String> vendors)
         {
             myRegKey = myRegKey.OpenSubKey(@"SOFTWARE", false);
             RegistryKey temp = myRegKey;
@@ -55,8 +55,8 @@ namespace ProjetLinxya
                     }
                     else
                     {
-                        if (!subkeys[i].Equals("Classes"))
-                        guessList.AddRange(LectureReg(subkeys[i], softList));
+                        if (!(subkeys[i].Equals("Classes")))
+                        guessList.AddRange(LectureReg(subkeys[i], softList, vendors));
                     }
                     myRegKey = temp;
                 }
@@ -65,13 +65,12 @@ namespace ProjetLinxya
             }
             catch (SecurityException se)
             {
-                //Console.WriteLine("\t Impossible to access SOFTWARE.");
                 return (guessList);
             }
         }
 
         //Fonction surchargée de lecture de registre, lit jusqu'à trouver un noeud correspondant à un programme
-        public List<RegGuess> LectureReg(String regPath, List<String> softList)
+        public List<RegGuess> LectureReg(String regPath, List<String> softList, List<String> vendors)
         {
             //On crée la liste des mots clés qui doivent être reconnus. La liste des noms seule ne suffit pas car 
             List<String> f = Comp.SplitStringList(softList);
@@ -103,13 +102,19 @@ namespace ProjetLinxya
                     //Condition a modifier pour une meilleure reconnaissance des logiciels
                     if (softList.Contains(subkeys[i]))
                     {
-                        //Console.WriteLine(subkeys[i]);
                         guessList.Add(FindValues(subkeys[i]));
                     }
                     else
                     {
-                        if (!subkeys[i].Equals("Classes"))
-                        guessList.AddRange(LectureReg(subkeys[i], softList));
+                        if (containsLighterReversed(vendors, subkeys[i]))
+                        {
+                            guessList.AddRange(LectureRegLighter(subkeys[i], softList, vendors));
+                        }
+                        else
+                        {
+                            if (!subkeys[i].Equals("Classes"))
+                                guessList.AddRange(LectureReg(subkeys[i], softList, vendors));
+                        }
                     }
                     myRegKey = temp;
                 }
@@ -121,6 +126,54 @@ namespace ProjetLinxya
                 return (guessList);
             }
         }
+
+        //Fonction surchargée de lecture de registre, lit jusqu'à trouver un noeud correspondant à un programme
+        public List<RegGuess> LectureRegLighter(String regPath, List<String> softList, List<String> vendors)
+        {
+            //On crée la liste des mots clés qui doivent être reconnus. La liste des noms seule ne suffit pas car 
+            List<String> f = Comp.SplitStringList(softList);
+            f = Comp.lSort(f);
+            List<RegGuess> guessList = new List<RegGuess>();
+            RegistryKey temp = myRegKey;
+            try
+            {
+                RegistryPermission regPermission = new RegistryPermission(RegistryPermissionAccess.AllAccess, regPath);
+                try
+                {
+                    regPermission.Demand();
+                }
+                catch (Exception e)
+                {
+                    return (null);
+                }
+                myRegKey = myRegKey.OpenSubKey(regPath);
+                temp = myRegKey;
+
+                String[] subkeys = myRegKey.GetSubKeyNames();
+                String[] values = myRegKey.GetValueNames();
+                //Boucle qui permet la reconnaissance des noms de logiciels
+                for (int i = 0; i < subkeys.Length; i++)
+                {
+                    if (containsLighter(softList,subkeys[i])/* && containsLighter(vendors,subkeys[i])*/)
+                    {
+                        guessList.Add(FindValues(subkeys[i]));
+                    }
+                    
+                    else
+                    {
+                        if (!subkeys[i].Equals("Classes"))
+                            guessList.AddRange(LectureRegLighter(subkeys[i], softList, vendors));
+                    }
+                    myRegKey = temp;
+                }
+                return (guessList);
+            }
+            catch (SecurityException se)
+            {
+                return (guessList);
+            }
+        }
+
         // Fonction qui pour une clé permet de créer une liste des NamedValues qu'elle contient.
         public RegGuess FindValues(String regPath)
         {
@@ -204,6 +257,28 @@ namespace ProjetLinxya
             }
             String result = (String)regKey.GetValue(p.value);
             return result;
+        }
+
+        public Boolean containsLighter (List<String> list, String value)
+        {
+            Boolean res = false;
+            foreach (String str in list)
+            {
+                if (str.Contains(value))
+                    return true;
+            }
+            return res;
+        }
+
+        public Boolean containsLighterReversed(List<String> list, String value)
+        {
+            Boolean res = false;
+            foreach (String str in list)
+            {
+                if (value.Contains(str))
+                    return true;
+            }
+            return res;
         }
     }
 }

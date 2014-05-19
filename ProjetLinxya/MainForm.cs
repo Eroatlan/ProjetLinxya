@@ -21,17 +21,21 @@ namespace ProjetLinxya
         private static SoftList softList;
         private static SoftList selectedList = new SoftList();
 
+        //Constructeur pour la fenêtre d'affichage principale
         public MainForm()
         {
             InitializeComponent();
         }
 
+        //Fonction permettant l'ajout de softwares à la boxList des softwares
         public void AddToListBoxSoftwares(String soft)
         {
             if (! (soft==null))
                 this.softwaresListBox.Items.Add(soft);
         }
         
+        //Fonction principale du logiciel, lance la recherche des logiciels installés
+        //puis cherche les correspondances en registre système et affiche les résultats
         public void Run()
         {
             Ways wat = new Ways();
@@ -85,6 +89,7 @@ namespace ProjetLinxya
             }
         }
 
+        //Fonction liée au bouton permettant le lancement de la fonction principale
         private void launchButton_Click(object sender, EventArgs e)
         {
             this.launchButton.Visible = false;
@@ -92,6 +97,8 @@ namespace ProjetLinxya
             this.Run();
         }
 
+        //Fonction déclenchée au changement d'index sélectionné par l'utilisatieur dans
+        //la ListBox correspondant aux softwares
         private void softwaresListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -116,6 +123,8 @@ namespace ProjetLinxya
             { }
         }
 
+        //Fonction déclenchée lorsqu'une ligne est checkée par l'utilisateur dans
+        //la ListBox correspondant aux clés liées à un software
         private void keysListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (e.CurrentValue == CheckState.Unchecked)
@@ -151,6 +160,7 @@ namespace ProjetLinxya
             
         }
 
+        //Fonction permettant le rafraichissement de l'affichage des softwares sélectionnés
         private void displaySelected ()
         {
             listBoxSelectedSoftwares.Items.Clear();
@@ -160,6 +170,8 @@ namespace ProjetLinxya
             }
         }
 
+        //Fonction déclenchée lorsqu'une ligne est checkée par l'utilisateur ou automatiquement dans
+        //la ListBox correspondant aux softwares
         private void softwaresListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (e.CurrentValue == CheckState.Checked)
@@ -175,6 +187,8 @@ namespace ProjetLinxya
             }
         }
 
+        //Fonction liée au bouton permettant la finalisation de l'utilisation
+        //A redéfinir par l'entreprise afin d'être intégrée
         private void submitButton_Click(object sender, EventArgs e)
         {
             String mess = "";
