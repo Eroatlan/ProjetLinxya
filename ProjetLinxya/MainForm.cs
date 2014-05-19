@@ -75,7 +75,6 @@ namespace ProjetLinxya
             {
                 MessageBox.Show("An error occurred while querying for WMI data: " + e.Message);
             }
-
             softList.secondTurn();
 
             foreach (Software s in softList.getList())

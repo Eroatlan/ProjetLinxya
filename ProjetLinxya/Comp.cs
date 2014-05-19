@@ -26,13 +26,38 @@ namespace ProjetLinxya
             else
                 return 0;
         }
+
+        //Méthode pour déterminer si les listes de string 1 et 2 passées en paramètre ont au moins un élément en commun
+        public static bool haveCommonString(List<String> l1, List<String> l2)
+        {
+            foreach(String s in l1)
+            {
+                if(l2.Contains(s))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        //Méthode pour déterminer si les listes de string 1 et 2 passées en paramètre ont au moins un élément en commun
+        public static NamedValue haveCommonString(List<NamedValue> l1, List<String> l2)
+        {
+            foreach (NamedValue n in l1)
+            {
+                if (l2.Contains(n.value))
+                {
+                    return n;
+                }
+            }
+            return null;
+        }
         //Méthode utilisée pour tester une regGuess entière.
         public static List<WeightedKey> regGuessTest(RegGuess r)
         {
             List<WeightedKey> result = new List<WeightedKey>();
             foreach (NamedValue nv in r.getValues())
             {
-                if (namedValueTest(nv) >= 70)
+                if (namedValueTest(nv) >= 50)
                 {
                     WeightedKey k = new WeightedKey(nv.value, namedValueTest(nv));
                     result.Add(k);
@@ -200,8 +225,19 @@ namespace ProjetLinxya
             }
             return back;
         }
-
-
+        //Méthode qui crée les noms décoposés des logiciels en conservant leurs noms.
+        public static List<NamedValue> SplitStringListAndKeep(List<String> ls)
+        {
+            List<NamedValue> back = new List<NamedValue>();
+            foreach (String s1 in ls)
+            {
+                foreach (String s2 in s1.Split(' '))
+                {
+                    back.Add(new NamedValue(s1,s2));
+                }
+            }
+            return back;
+        }
         //Méthode de tri des String a comparer
         public static List<String> lSort(List<String> l)
         {
