@@ -108,7 +108,7 @@ namespace ProjetLinxya
         {
             for (int i = 0; i<this.keys.Count ; i++)
             {
-                if (this.keys[i].getValue() == name)
+                if (name.Contains(this.keys[i].getValue()))
                     return this.keys[i];
             }
             return null;

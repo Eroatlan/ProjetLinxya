@@ -102,9 +102,12 @@ namespace ProjetLinxya
                 foreach (WeightedKey wk in s.getKeys())
                 {
                     this.keysListBox.Items.Add(wk);
-                    if (s.getFinalKey().getValue() == wk.getValue())
+                    if (s.getFinalKey() != null)
                     {
-                        this.keysListBox.SetItemCheckState(it, CheckState.Checked);
+                        if (s.getFinalKey().getValue() == wk.getValue())
+                        {
+                            this.keysListBox.SetItemCheckState(it, CheckState.Checked);
+                        }
                     }
                     it++;
                 }
@@ -166,8 +169,20 @@ namespace ProjetLinxya
             }
             else
             {
-                softwaresListBox.SetItemCheckState(softwaresListBox.SelectedIndex, CheckState.Unchecked);
+                selectedList.addSoft(softList.getSoftByName(softwaresListBox.SelectedItem.ToString()));
+                displaySelected();
+                //softwaresListBox.SetItemCheckState(softwaresListBox.SelectedIndex, CheckState.Unchecked);
             }
+        }
+
+        private void submitButton_Click(object sender, EventArgs e)
+        {
+            String mess = "";
+            foreach (Software soft in selectedList.getList())
+            {
+                mess = mess + "\n" + soft.getName() + " - " + soft.getFinalKey();
+            }
+            MessageBox.Show(mess, "Output", MessageBoxButtons.OK);
         }
 
             
