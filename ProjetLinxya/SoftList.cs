@@ -9,21 +9,17 @@ namespace ProjetLinxya
     public class SoftList : List<Software>
     {
         private List<Software> list;
-        public SoftList(List<Software> l)
-        {
-            this.list = l;
-        }
+
         //implementation of List constructor
         public SoftList()
             : base()
         {
-            List<String> k = new List<string>();
-            k.Add("aa"); k.Add(" i ");
-            List<String> g = new List<string>();
-            g.Add("zzzz"); g.Add(" i "); g.Add("ok");
-            Console.WriteLine(Comp.haveCommonString(k, g));
-
             this.list = new List<Software>();
+        }
+
+        public SoftList(List<Software> l)
+        {
+            this.list = l;
         }
         //method that returns the Softwares with a given Vendor. Returns null if it doesn't exist
         public SoftList getSoftWaresByVendor(String name)
@@ -31,7 +27,7 @@ namespace ProjetLinxya
             List<Software> r = new List<Software>();
             if (this.getVendors().Contains(name))
             {
-                foreach(Software s in this.getList())
+                foreach (Software s in this.getList())
                 {
                     if (s.getVendor().Equals(name))
                     {
@@ -41,8 +37,8 @@ namespace ProjetLinxya
                 return new SoftList(r);
             }
             else return null;
-
         }
+
         //method to tell if a value exists with the given name in the list
         public bool match(String name)
         {
@@ -50,7 +46,7 @@ namespace ProjetLinxya
             {
                 try
                 {
-                    if (soft.getName().Equals(name))
+                    if (soft.getName().Contains(name) || name.Contains(soft.getName()))
                     {
                         return true;
                     }
@@ -60,7 +56,8 @@ namespace ProjetLinxya
             }
             return false;
         }
-        //method that returns the Software with a given name. Returns null if it doesn't exist
+
+        //méthode retournant le software correspondant au nom donné en paramètre, null sinon
         public Software getSoftByName(String name)
         {
             if (match(name))
@@ -69,7 +66,7 @@ namespace ProjetLinxya
                 {
                     try
                     {
-                        if (s.getName().Equals(name))
+                        if (s.getName().Contains(name) || name.Contains(s.getName()))
                         {
                             return s;
                         }
@@ -80,8 +77,29 @@ namespace ProjetLinxya
                 return null;
             }
             else return null;
-
         }
+
+        //Méthode permettant de supprimer le software au nom indiqué parmis ceux de la liste
+        public void removeByName (String name)
+        {
+            if (match(name))
+            {
+                foreach (Software s in this.list)
+                {
+                    try
+                    {
+                        if (s.getName().Equals(name))
+                        {
+                            list.Remove(s);
+                            return;
+        }
+                    }
+                    catch (Exception)
+                    { }
+                }
+            }
+        }
+
         public void addSoft(Software soft)
         {
             this.list.Add(soft);
@@ -104,10 +122,8 @@ namespace ProjetLinxya
         }
 
         public List<Software> getList()
-        { 
-            return this.list; 
-        }
-        //Méthode utilisée pour renvoyer les noms de programmes. ( Renvoie les noms donnés par microsoft )
+        { return this.list; }
+
         public List<String> getNames()
         {
             List<String> names = new List<String>();
@@ -122,6 +138,7 @@ namespace ProjetLinxya
             }
             return names;
         }
+
         //Cette méthode appelle tout ce qui est nécessaire dans le premier tour de boucle: lecture du dictionnaire pour accès aux données.
         public void firstTurn()
         {
@@ -140,9 +157,11 @@ namespace ProjetLinxya
                 }
             }
         }
+
         //Cette méthode est celle qui permet le second tour: recherche dynamique dans le registre de clés CD.
         public void secondTurn()
         {
+            
             //Définition des variables registre et guessList qui sont nécessaires.
             Registre reg = new Registre();
             List<RegGuess> GuessList = new List<RegGuess>();
@@ -159,7 +178,6 @@ namespace ProjetLinxya
                     Software r = this.getSoftByName(guess.getName());
                     if (!(r == null))
                     {
-
                         //Si on n'a  pas déjà trouvé une clé avec 100% de chance
                         if (!r.IsCompleted())
                         {
@@ -178,5 +196,18 @@ namespace ProjetLinxya
                 }
             }
         }
+        
+        public void setFinalKey(String softName, WeightedKey finalKey)
+        {
+            foreach (Software soft in this.list)
+            {
+                if (soft.getName().Equals(softName))
+                {
+                    soft.setFinalKey(finalKey);
+                    return;
+                }
+            }
+        }
+
     }
 }

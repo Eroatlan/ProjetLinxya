@@ -57,7 +57,7 @@ namespace ProjetLinxya
             List<WeightedKey> result = new List<WeightedKey>();
             foreach (NamedValue nv in r.getValues())
             {
-                if (namedValueTest(nv) >= 50)
+                if (namedValueTest(nv) >= 70)
                 {
                     WeightedKey k = new WeightedKey(nv.value, namedValueTest(nv));
                     result.Add(k);

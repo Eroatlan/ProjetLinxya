@@ -15,7 +15,6 @@ namespace ProjetLinxya
     {
         //La classe registre permet les différents accès au registre.
         private RegistryKey myRegKey = Registry.LocalMachine;
-        List<String> toAvoid;
 
         public Registre()
         {
@@ -47,7 +46,7 @@ namespace ProjetLinxya
                     //Console.WriteLine(subkeys[i]);
                     if (softList.getNames().Contains(subkeys[i]))
                     {
-                        guessList.Add(FindValues(subkeys[i],subkeys[i]));
+                        guessList.Add(FindValues(subkeys[i], subkeys[i]));
                     }
                     else if (softList.getVendors().Contains(subkeys[i]))
                     {
@@ -56,7 +55,7 @@ namespace ProjetLinxya
                     else
                     {
                         if (!subkeys[i].Equals("Classes"))
-                        guessList.AddRange(LectureReg(subkeys[i], softList.getNames()));
+                            guessList.AddRange(LectureReg(subkeys[i], softList.getNames()));
                     }
                     myRegKey = temp;
                 }
@@ -98,12 +97,12 @@ namespace ProjetLinxya
                     if (softList.Contains(subkeys[i]))
                     {
                         //Console.WriteLine(subkeys[i]);
-                        guessList.Add(FindValues(subkeys[i],subkeys[i]));
+                        guessList.Add(FindValues(subkeys[i], subkeys[i]));
                     }
                     else
                     {
                         if (!subkeys[i].Equals("Classes"))
-                        guessList.AddRange(LectureReg(subkeys[i], softList));
+                            guessList.AddRange(LectureReg(subkeys[i], softList));
                     }
                     myRegKey = temp;
                 }
@@ -141,19 +140,19 @@ namespace ProjetLinxya
                 for (int i = 0; i < subkeys.Length; i++)
                 {
                     List<String> splitedsubkey = subkeys[i].Split(' ').ToList();
-                   // DEFINIR ICI UNE METHODE ALLEGE POUR RECONNAITRE LES NOMS DES LOGICIELS PLUS PRECISEMENT
-                    if(softList.getNames().Contains(subkeys[i]) )
+                    // DEFINIR ICI UNE METHODE ALLEGE POUR RECONNAITRE LES NOMS DES LOGICIELS PLUS PRECISEMENT
+                    if (softList.getNames().Contains(subkeys[i]))
                     {
                         guessList.Add(FindValues(subkeys[i], subkeys[i]));
                     }
-                    else if (Comp.haveCommonString(remainingNames, splitedsubkey)!=null)
+                    else if (Comp.haveCommonString(remainingNames, splitedsubkey) != null)
                     {
                         guessList.Add(FindValues(subkeys[i], Comp.haveCommonString(remainingNames, splitedsubkey).name));
                     }
                     else
                     {
                         if (!subkeys[i].Equals("Classes"))
-                            guessList.AddRange(LectureRegVFound( softList, subkeys[i]));
+                            guessList.AddRange(LectureRegVFound(softList, subkeys[i]));
                     }
                     myRegKey = temp;
                 }
