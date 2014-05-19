@@ -15,6 +15,7 @@ namespace ProjetLinxya
         private String productID;
         private String version;
         private List<WeightedKey> keys;
+        private WeightedKey finalKey;
 
         public Software(String idN, String name, String vend, String instLoc, String prodID, String ver)
         {
@@ -42,7 +43,6 @@ namespace ProjetLinxya
         { return this.version; }
 
 
-        //Functions to manipulate weighted keys
         public void addKey(String val, int weight)
         { this.keys.Add(new WeightedKey(val, weight)); }
         public void addKey(WeightedKey k)
@@ -91,6 +91,26 @@ namespace ProjetLinxya
         public void ResetKeys()
         {
             this.keys = new List<WeightedKey>();
+        }
+
+        public WeightedKey getFinalKey()
+        {
+            return this.finalKey;
+        }
+
+        public void setFinalKey(WeightedKey val)
+        {
+            this.finalKey = val;
+        }
+
+        public WeightedKey getKeyByName(String name)
+        {
+            for (int i = 0; i<this.keys.Count ; i++)
+            {
+                if (name.Contains(this.keys[i].getValue()))
+                    return this.keys[i];
+            }
+            return null;
         }
     }
 }

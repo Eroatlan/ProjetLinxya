@@ -19,18 +19,23 @@ namespace ProjetLinxya
     {
         private static Registre reg;
         private static SoftList softList;
+        private static SoftList selectedList = new SoftList();
 
+        //Constructeur pour la fenêtre d'affichage principale
         public MainForm()
         {
             InitializeComponent();
         }
 
+        //Fonction permettant l'ajout de softwares à la boxList des softwares
         public void AddToListBoxSoftwares(String soft)
         {
             if (! (soft==null))
                 this.softwaresListBox.Items.Add(soft);
         }
         
+        //Fonction principale du logiciel, lance la recherche des logiciels installés
+        //puis cherche les correspondances en registre système et affiche les résultats
         public void Run()
         {
             Ways wat = new Ways();
@@ -83,29 +88,46 @@ namespace ProjetLinxya
             }
         }
 
+        //Fonction liée au bouton permettant le lancement de la fonction principale
         private void launchButton_Click(object sender, EventArgs e)
         {
+            this.launchButton.Visible = false;
+            MessageBox.Show("Traitement en cours.", "Parcours du registre", MessageBoxButtons.OK);
             this.Run();
-            //this.softwaresListBox.
         }
 
+        //Fonction déclenchée au changement d'index sélectionné par l'utilisatieur dans
+        //la ListBox correspondant aux softwares
         private void softwaresListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
                 this.keysListBox.Items.Clear();
                 Software s = softList.getSoftByName(this.softwaresListBox.SelectedItem.ToString());
+                int it = 0;
                 foreach (WeightedKey wk in s.getKeys())
                 {
                     this.keysListBox.Items.Add(wk);
+                    if (s.getFinalKey() != null)
+                    {
+                        if (s.getFinalKey().getValue() == wk.getValue())
+                        {
+                            this.keysListBox.SetItemCheckState(it, CheckState.Checked);
+                        }
+                    }
+                    it++;
                 }
             }
             catch (Exception ex)
             { }
         }
 
+        //Fonction déclenchée lorsqu'une ligne est checkée par l'utilisateur dans
+        //la ListBox correspondant aux clés liées à un software
         private void keysListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
+            if (e.CurrentValue == CheckState.Unchecked)
+            {
                 if (e.Index == keysListBox.SelectedIndex)
                 {
                     if (keysListBox.CheckedItems.Count > 0)
@@ -117,34 +139,65 @@ namespace ProjetLinxya
                         }
                     }
                     softwaresListBox.SetItemCheckState(softwaresListBox.SelectedIndex, CheckState.Checked);
+                    String softName = softwaresListBox.SelectedItem.ToString();
 
-                    //String[] parsedItem = listBoxSelectedSoftwares.SelectedItem.ToString().Split('\t');
-                    if (listBoxSelectedSoftwares.Items.Contains(softwaresListBox.SelectedItem))
-                    { }
-                    else
-                        listBoxSelectedSoftwares.Items.Add(softwaresListBox.SelectedItem.ToString() + " \t " + keysListBox.SelectedItem.ToString());
+                    softList.setFinalKey(softName, softList.getSoftByName(softName).getKeyByName(keysListBox.SelectedItem.ToString()));
+                    
+                    if (!(selectedList.getNames().Contains(softName)))
+                        selectedList.addSoft(softList.getSoftByName(softName));
                 }
-
-                /*if (e.CurrentValue == CheckState.Unchecked)
+            }
+            else
+            {
+                if (softwaresListBox.CheckedItems.Count == 1)
                 {
-                    if (keysListBox.CheckedItems.Count == 0)
-                    {
-                        try
-                        {
-                            listBoxSelectedSoftwares.Items.Remove(softwaresListBox.SelectedItem);
-                        }
-                        catch (Exception exc)
-                        { }
-                    }
-                }*/
+                    softwaresListBox.SetItemCheckState(softwaresListBox.SelectedIndex, CheckState.Unchecked);
+                }
+            }
+
+            displaySelected();    
             
         }
 
+        //Fonction permettant le rafraichissement de l'affichage des softwares sélectionnés
+        private void displaySelected ()
+        {
+            listBoxSelectedSoftwares.Items.Clear();
+            foreach (Software soft in selectedList.getList())
+            {
+                listBoxSelectedSoftwares.Items.Add(soft.getName());
+            }
+        }
+
+        //Fonction déclenchée lorsqu'une ligne est checkée par l'utilisateur ou automatiquement dans
+        //la ListBox correspondant aux softwares
         private void softwaresListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            
-               
+            if (e.CurrentValue == CheckState.Checked)
+            {
+                selectedList.removeByName(softwaresListBox.SelectedItem.ToString());
+                displaySelected();
+            }
+            else
+            {
+                selectedList.addSoft(softList.getSoftByName(softwaresListBox.SelectedItem.ToString()));
+                displaySelected();
+                //softwaresListBox.SetItemCheckState(softwaresListBox.SelectedIndex, CheckState.Unchecked);
+            }
         }
+
+        //Fonction liée au bouton permettant la finalisation de l'utilisation
+        //A redéfinir par l'entreprise afin d'être intégrée
+        private void submitButton_Click(object sender, EventArgs e)
+        {
+            String mess = "";
+            foreach (Software soft in selectedList.getList())
+            {
+                mess = mess + "\n" + soft.getName() + " - " + soft.getFinalKey();
+            }
+            MessageBox.Show(mess, "Output", MessageBoxButtons.OK);
+        }
+
             
     }  
 }
