@@ -105,7 +105,7 @@ namespace ProjetLinxya
 
         public WeightedKey getKeyByName(String name)
         {
-            for (int i = 0; i<this.keys.Count ; i++)
+            for (int i = 0; i < this.keys.Count; i++)
             {
                 if (name.Contains(this.keys[i].getValue()))
                     return this.keys[i];

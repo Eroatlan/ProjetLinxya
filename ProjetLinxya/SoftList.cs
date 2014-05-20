@@ -10,36 +10,14 @@ namespace ProjetLinxya
     {
         private List<Software> list;
 
-        //implementation of List constructor
+        //Constructeur de liste de software
         public SoftList()
             : base()
         {
             this.list = new List<Software>();
         }
 
-        public SoftList(List<Software> l)
-        {
-            this.list = l;
-        }
-        //method that returns the Softwares with a given Vendor. Returns null if it doesn't exist
-        public SoftList getSoftWaresByVendor(String name)
-        {
-            List<Software> r = new List<Software>();
-            if (this.getVendors().Contains(name))
-            {
-                foreach (Software s in this.getList())
-                {
-                    if (s.getVendor().Equals(name))
-                    {
-                        r.Add(s);
-                    }
-                }
-                return new SoftList(r);
-            }
-            else return null;
-        }
-
-        //method to tell if a value exists with the given name in the list
+        //Méthode permettant de retourner si une valeur existe au nom indiqué dans la liste
         public bool match(String name)
         {
             foreach (Software soft in this.list)
@@ -80,7 +58,7 @@ namespace ProjetLinxya
         }
 
         //Méthode permettant de supprimer le software au nom indiqué parmis ceux de la liste
-        public void removeByName (String name)
+        public void removeByName(String name)
         {
             if (match(name))
             {
@@ -92,7 +70,7 @@ namespace ProjetLinxya
                         {
                             list.Remove(s);
                             return;
-        }
+                        }
                     }
                     catch (Exception)
                     { }
@@ -105,25 +83,10 @@ namespace ProjetLinxya
             this.list.Add(soft);
         }
 
-        //Méthode utilisée pour renvoyer la liste des éditeurs
-        public List<String> getVendors()
-        {
-            List<String> names = new List<String>();
-            foreach (Software soft in this.list)
-            {
-                try
-                {
-                    names.Add(soft.getVendor());
-                }
-                catch (Exception)
-                { }
-            }
-            return names;
-        }
-
         public List<Software> getList()
         { return this.list; }
 
+        //Méthode retournant la liste des noms de softwares dans la liste courante
         public List<String> getNames()
         {
             List<String> names = new List<String>();
@@ -161,20 +124,17 @@ namespace ProjetLinxya
         //Cette méthode est celle qui permet le second tour: recherche dynamique dans le registre de clés CD.
         public void secondTurn()
         {
-            
+
             //Définition des variables registre et guessList qui sont nécessaires.
             Registre reg = new Registre();
             List<RegGuess> GuessList = new List<RegGuess>();
             //Tour du registre complet:
             //Récupération des entrées registres qui pourraient correspondre avec ce que l'on attend
-            GuessList = reg.LectureReg(this);
+            GuessList = reg.LectureReg(this.getNames(), getVendors());
             foreach (RegGuess guess in GuessList)
             {
                 foreach (WeightedKey k in Comp.regGuessTest(guess))
-                
                 {
-
-                    //C'est la merde que ça soit en fonction du name du guess.......
                     Software r = this.getSoftByName(guess.getName());
                     if (!(r == null))
                     {
@@ -189,14 +149,10 @@ namespace ProjetLinxya
                             r.addKey(k);
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine("aHA");
-                    }
                 }
             }
         }
-        
+
         public void setFinalKey(String softName, WeightedKey finalKey)
         {
             foreach (Software soft in this.list)
@@ -209,5 +165,19 @@ namespace ProjetLinxya
             }
         }
 
+        public List<String> getVendors()
+        {
+            List<String> res = new List<string>();
+            foreach (Software soft in this.list)
+            {
+                try
+                {
+                    res.Add(soft.getVendor());
+                }
+                catch (Exception cc)
+                { }
+            }
+            return res;
+        }
     }
 }

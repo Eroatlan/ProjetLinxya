@@ -21,21 +21,17 @@ namespace ProjetLinxya
         private static SoftList softList;
         private static SoftList selectedList = new SoftList();
 
-        //Constructeur pour la fenêtre d'affichage principale
         public MainForm()
         {
             InitializeComponent();
         }
 
-        //Fonction permettant l'ajout de softwares à la boxList des softwares
         public void AddToListBoxSoftwares(String soft)
         {
-            if (! (soft==null))
+            if (!(soft == null))
                 this.softwaresListBox.Items.Add(soft);
         }
-        
-        //Fonction principale du logiciel, lance la recherche des logiciels installés
-        //puis cherche les correspondances en registre système et affiche les résultats
+
         public void Run()
         {
             Ways wat = new Ways();
@@ -73,13 +69,14 @@ namespace ProjetLinxya
                     catch (Exception) { }
 
                     softList.addSoft(new Software(idN, name, vend, instLoc, prodID, version));
-                    
+
                 }
             }
             catch (ManagementException e)
             {
                 MessageBox.Show("An error occurred while querying for WMI data: " + e.Message);
             }
+
             softList.secondTurn();
 
             foreach (Software s in softList.getList())
@@ -88,7 +85,6 @@ namespace ProjetLinxya
             }
         }
 
-        //Fonction liée au bouton permettant le lancement de la fonction principale
         private void launchButton_Click(object sender, EventArgs e)
         {
             this.launchButton.Visible = false;
@@ -96,8 +92,6 @@ namespace ProjetLinxya
             this.Run();
         }
 
-        //Fonction déclenchée au changement d'index sélectionné par l'utilisatieur dans
-        //la ListBox correspondant aux softwares
         private void softwaresListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -122,8 +116,6 @@ namespace ProjetLinxya
             { }
         }
 
-        //Fonction déclenchée lorsqu'une ligne est checkée par l'utilisateur dans
-        //la ListBox correspondant aux clés liées à un software
         private void keysListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (e.CurrentValue == CheckState.Unchecked)
@@ -142,7 +134,7 @@ namespace ProjetLinxya
                     String softName = softwaresListBox.SelectedItem.ToString();
 
                     softList.setFinalKey(softName, softList.getSoftByName(softName).getKeyByName(keysListBox.SelectedItem.ToString()));
-                    
+
                     if (!(selectedList.getNames().Contains(softName)))
                         selectedList.addSoft(softList.getSoftByName(softName));
                 }
@@ -155,12 +147,11 @@ namespace ProjetLinxya
                 }
             }
 
-            displaySelected();    
-            
+            displaySelected();
+
         }
 
-        //Fonction permettant le rafraichissement de l'affichage des softwares sélectionnés
-        private void displaySelected ()
+        private void displaySelected()
         {
             listBoxSelectedSoftwares.Items.Clear();
             foreach (Software soft in selectedList.getList())
@@ -169,8 +160,6 @@ namespace ProjetLinxya
             }
         }
 
-        //Fonction déclenchée lorsqu'une ligne est checkée par l'utilisateur ou automatiquement dans
-        //la ListBox correspondant aux softwares
         private void softwaresListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (e.CurrentValue == CheckState.Checked)
@@ -186,8 +175,6 @@ namespace ProjetLinxya
             }
         }
 
-        //Fonction liée au bouton permettant la finalisation de l'utilisation
-        //A redéfinir par l'entreprise afin d'être intégrée
         private void submitButton_Click(object sender, EventArgs e)
         {
             String mess = "";
@@ -198,6 +185,6 @@ namespace ProjetLinxya
             MessageBox.Show(mess, "Output", MessageBoxButtons.OK);
         }
 
-            
-    }  
+
+    }
 }

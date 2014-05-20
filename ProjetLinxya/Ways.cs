@@ -16,7 +16,7 @@ namespace ProjetLinxya
         {
             dico = new Dictionary<string, PathValue>();
             //Doit être redéfini avec l'adresse internet ( et l'éventuel cryptage du fichier ).
-            String[] ways = System.IO.File.ReadAllLines(@"C:\Users\Thomas\git\ProjetLinxya\ProjetLinxya\ways.txt");
+            String[] ways = System.IO.File.ReadAllLines(@"ways.txt");
             foreach (String s in ways)
             {
                 String[] d = s.Split(';');

@@ -30,9 +30,9 @@ namespace ProjetLinxya
         //Méthode pour déterminer si les listes de string 1 et 2 passées en paramètre ont au moins un élément en commun
         public static bool haveCommonString(List<String> l1, List<String> l2)
         {
-            foreach(String s in l1)
+            foreach (String s in l1)
             {
-                if(l2.Contains(s))
+                if (l2.Contains(s))
                 {
                     return true;
                 }
@@ -57,11 +57,11 @@ namespace ProjetLinxya
             List<WeightedKey> result = new List<WeightedKey>();
             foreach (NamedValue nv in r.getValues())
             {
-                if (namedValueTest(nv) >= 60 )
+                if (namedValueTest(nv) >= 60)
                 {
                     WeightedKey k = new WeightedKey(nv.value, namedValueTest(nv));
-                    if (!result.Contains(k)) 
-                    result.Add(k);
+                    if (!result.Contains(k))
+                        result.Add(k);
                 }
             }
             return result;
@@ -81,9 +81,9 @@ namespace ProjetLinxya
         //Méthode utilisée pour tester une chaîne, utilisant les méthodes de test privées.
         public static int keyTest(String s)
         {
-            Regex r= new Regex("^(([A-Z]):)");
+            Regex r = new Regex("^(([A-Z]):)");
             Regex date = new Regex("^[0-3]?[0-9]/[0-3]?[0-9]/(?:[0-9]{2})?[0-9]{2}$");
-            if (s.StartsWith("{")||r.Match(s).Success||date.Match(s).Success)
+            if (s.StartsWith("{") || r.Match(s).Success || date.Match(s).Success || s.StartsWith("http:"))
             {
                 return 0;
             }
@@ -240,7 +240,7 @@ namespace ProjetLinxya
             {
                 foreach (String s2 in s1.Split(' '))
                 {
-                    back.Add(new NamedValue(s1,s2));
+                    back.Add(new NamedValue(s1, s2));
                 }
             }
             return back;
