@@ -253,7 +253,14 @@ namespace ProjetLinxya
             RegistryKey regKey = myRegKey;
             foreach (String s in subToOpen)
             {
-                regKey = regKey.OpenSubKey(s);
+                try
+                {
+                    regKey = regKey.OpenSubKey(s);
+                }
+                catch (Exception wrongVersion)
+                {
+                    return "";
+                }
             }
             String result = (String)regKey.GetValue(p.value);
             return result;
