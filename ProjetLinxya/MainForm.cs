@@ -67,7 +67,10 @@ namespace ProjetLinxya
                     catch (Exception) { }
                     try { version = queryObj["Version"].ToString(); }
                     catch (Exception) { }
-
+                    if (name == "VMware Workstation" || name=="Microsoft Visual Studio Professional 2013")
+                    {
+                        Console.WriteLine(name+"   " + version);
+                    }
                     softList.addSoft(new Software(idN, name, vend, instLoc, prodID, version));
 
                 }
