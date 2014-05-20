@@ -110,13 +110,14 @@ namespace ProjetLinxya
             //La classe Ways et celle qui contient le chemin d'accès au dictionnaire.
             Ways w = new Ways();
 
-            Dictionary<NamedValue, PathValue> d = w.getDico();
+            Dictionary<String, PathValue> d = w.getDico();
 
             foreach (Software s in list)
             {
-                NamedValue n = new NamedValue(s.getName(), s.getVersion());
+                String n = s.getName() + " - " + s.getVersion();
                 if (d.ContainsKey(n))
                 {
+                    Console.WriteLine(s.getName());
                     String tmp = r.readValue(d[n]);
                     if (!tmp.Equals(""))
                         s.addKey(r.readValue(d[n]), 100);
