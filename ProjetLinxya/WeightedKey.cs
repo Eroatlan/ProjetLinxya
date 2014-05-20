@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjetLinxya
 {
+    //Classe représentant les clés CD pondérées, avec une valeur et un poids
     public class WeightedKey
     {
         private String value;

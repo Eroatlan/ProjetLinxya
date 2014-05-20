@@ -15,7 +15,6 @@ namespace ProjetLinxya
     {
         //La classe registre permet les différents accès au registre.
         private RegistryKey myRegKey = Registry.LocalMachine;
-        List<String> toAvoid;
 
         public Registre()
         {
@@ -34,48 +33,46 @@ namespace ProjetLinxya
         }
 
         //Fonction initiale pour la lecture de registre (sans paramètre) appelle la version surchargé pour la suite.
-        public List<RegGuess> LectureReg(List<String> softList)
+        public List<RegGuess> LectureReg(SoftList softList)
         {
             myRegKey = myRegKey.OpenSubKey(@"SOFTWARE", false);
             RegistryKey temp = myRegKey;
-
             List<RegGuess> guessList = new List<RegGuess>();
-
             try
             {
-                //Bloc d'affichage simple
                 String[] subkeys = myRegKey.GetSubKeyNames();
-
                 for (int i = 0; i < subkeys.Length; i++)
                 {
                     //Console.WriteLine(subkeys[i]);
-                    if (softList.Contains(subkeys[i]))
+                    if (softList.getNames().Contains(subkeys[i]))
                     {
-                        guessList.Add(FindValues(subkeys[i]));
+                        guessList.Add(FindValues(subkeys[i], subkeys[i]));
+                    }
+                    else if (softList.getVendors().Contains(subkeys[i]))
+                    {
+                        guessList.AddRange(LectureRegVFound(softList.getSoftWaresByVendor(subkeys[i]), subkeys[i]));
                     }
                     else
                     {
                         if (!subkeys[i].Equals("Classes"))
-                        guessList.AddRange(LectureReg(subkeys[i], softList));
+                            guessList.AddRange(LectureReg(subkeys[i], softList.getNames()));
                     }
                     myRegKey = temp;
                 }
-
                 return (guessList);
             }
             catch (SecurityException se)
             {
-                //Console.WriteLine("\t Impossible to access SOFTWARE.");
+                Console.WriteLine(se);
                 return (guessList);
             }
         }
+
 
         //Fonction surchargée de lecture de registre, lit jusqu'à trouver un noeud correspondant à un programme
         public List<RegGuess> LectureReg(String regPath, List<String> softList)
         {
             //On crée la liste des mots clés qui doivent être reconnus. La liste des noms seule ne suffit pas car 
-            List<String> f = Comp.SplitStringList(softList);
-            f = Comp.lSort(f);
             List<RegGuess> guessList = new List<RegGuess>();
             RegistryKey temp = myRegKey;
             try
@@ -83,18 +80,14 @@ namespace ProjetLinxya
                 RegistryPermission regPermission = new RegistryPermission(RegistryPermissionAccess.AllAccess, regPath);
                 try
                 {
-
                     regPermission.Demand();
                 }
                 catch (Exception e)
                 {
-                    //Console.WriteLine(e.Message);
-                    //Console.ReadLine();
                     return (null);
                 }
                 myRegKey = myRegKey.OpenSubKey(regPath);
                 temp = myRegKey;
-
                 String[] subkeys = myRegKey.GetSubKeyNames();
                 String[] values = myRegKey.GetValueNames();
                 //Boucle qui permet la reconnaissance dess noms de logiciels
@@ -104,12 +97,12 @@ namespace ProjetLinxya
                     if (softList.Contains(subkeys[i]))
                     {
                         //Console.WriteLine(subkeys[i]);
-                        guessList.Add(FindValues(subkeys[i]));
+                        guessList.Add(FindValues(subkeys[i], subkeys[i]));
                     }
                     else
                     {
                         if (!subkeys[i].Equals("Classes"))
-                        guessList.AddRange(LectureReg(subkeys[i], softList));
+                            guessList.AddRange(LectureReg(subkeys[i], softList));
                     }
                     myRegKey = temp;
                 }
@@ -121,10 +114,61 @@ namespace ProjetLinxya
                 return (guessList);
             }
         }
-        // Fonction qui pour une clé permet de créer une liste des NamedValues qu'elle contient.
-        public RegGuess FindValues(String regPath)
+        //Méthode utilisée lorsque l'on a trouvé le nom d'un éditeur dans le registre.
+        public List<RegGuess> LectureRegVFound(SoftList softList, String regPath)
         {
-            RegGuess current = new RegGuess(regPath);
+            Console.WriteLine("RegV");
+            List<NamedValue> remainingNames = Comp.SplitStringListAndKeep(softList.getNames());
+            List<RegGuess> guessList = new List<RegGuess>();
+            RegistryKey temp = myRegKey;
+            try
+            {
+                RegistryPermission regPermission = new RegistryPermission(RegistryPermissionAccess.AllAccess, regPath);
+                try
+                {
+                    regPermission.Demand();
+                }
+                catch (Exception e)
+                {
+                    return (null);
+                }
+                myRegKey = myRegKey.OpenSubKey(regPath);
+                temp = myRegKey;
+                String[] subkeys = myRegKey.GetSubKeyNames();
+                String[] values = myRegKey.GetValueNames();
+                //Boucle qui permet la reconnaissance dess noms de logiciels
+                for (int i = 0; i < subkeys.Length; i++)
+                {
+                    List<String> splitedsubkey = subkeys[i].Split(' ').ToList();
+                    // DEFINIR ICI UNE METHODE ALLEGE POUR RECONNAITRE LES NOMS DES LOGICIELS PLUS PRECISEMENT
+                    if (softList.getNames().Contains(subkeys[i]))
+                    {
+                        guessList.Add(FindValues(subkeys[i], subkeys[i]));
+                    }
+                    else if (Comp.haveCommonString(remainingNames, splitedsubkey) != null)
+                    {
+                        guessList.Add(FindValues(subkeys[i], Comp.haveCommonString(remainingNames, splitedsubkey).name));
+                    }
+                    else
+                    {
+                        if (!subkeys[i].Equals("Classes"))
+                            guessList.AddRange(LectureRegVFound(softList, subkeys[i]));
+                    }
+                    myRegKey = temp;
+                }
+                return (guessList);
+            }
+            catch (SecurityException se)
+            {
+                //Console.WriteLine("\t Impossible to access : " + regPath);
+                return (guessList);
+            }
+        }
+        // Méthode qui pour une clé permet de créer une liste des NamedValues qu'elle contient.
+        public RegGuess FindValues(String regPath, String name)
+        {
+            //Zbrah. Faut mettre le nom ici!
+            RegGuess current = new RegGuess(name);
             try
             {
                 RegistryPermission regPermission = new RegistryPermission(RegistryPermissionAccess.AllAccess, regPath);
@@ -132,7 +176,7 @@ namespace ProjetLinxya
             }
             catch (Exception e)
             {
-                //Console.WriteLine(e.Message);
+                Console.WriteLine(e.Message);
                 return (null);
             }
             myRegKey = myRegKey.OpenSubKey(regPath);
@@ -147,7 +191,6 @@ namespace ProjetLinxya
                 //On crée un objet NamedValue pour pouvoir l'ajouter a la liste dans le RegGuess
                 NamedValue n = new NamedValue(values[i], myRegKey.GetValue(values[i]).ToString());
                 current.addValue(n);
-                //Console.Write("\t " + myRegKey.GetValue(values[i]));
             }
 
             for (int i = 0; i < subkeys.Length; i++)

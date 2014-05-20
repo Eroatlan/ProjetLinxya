@@ -63,10 +63,6 @@
             // softwaresListBox
             // 
             this.softwaresListBox.FormattingEnabled = true;
-            this.softwaresListBox.Items.AddRange(new object[] {
-            "test",
-            "test",
-            "test"});
             this.softwaresListBox.Location = new System.Drawing.Point(4, 3);
             this.softwaresListBox.Name = "softwaresListBox";
             this.softwaresListBox.Size = new System.Drawing.Size(305, 409);
@@ -82,6 +78,7 @@
             this.submitButton.TabIndex = 3;
             this.submitButton.Text = "Soumettre";
             this.submitButton.UseVisualStyleBackColor = true;
+            this.submitButton.Click += new System.EventHandler(this.submitButton_Click);
             // 
             // launchButton
             // 
@@ -106,10 +103,6 @@
             this.keysListBox.CheckOnClick = true;
             this.keysListBox.FormattingEnabled = true;
             this.keysListBox.HorizontalScrollbar = true;
-            this.keysListBox.Items.AddRange(new object[] {
-            "test1",
-            "test2",
-            "test3"});
             this.keysListBox.Location = new System.Drawing.Point(9, 9);
             this.keysListBox.Name = "keysListBox";
             this.keysListBox.Size = new System.Drawing.Size(248, 169);

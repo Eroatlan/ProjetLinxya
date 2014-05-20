@@ -26,15 +26,41 @@ namespace ProjetLinxya
             else
                 return 0;
         }
+
+        //Méthode pour déterminer si les listes de string 1 et 2 passées en paramètre ont au moins un élément en commun
+        public static bool haveCommonString(List<String> l1, List<String> l2)
+        {
+            foreach(String s in l1)
+            {
+                if(l2.Contains(s))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        //Méthode pour déterminer si les listes de string 1 et 2 passées en paramètre ont au moins un élément en commun
+        public static NamedValue haveCommonString(List<NamedValue> l1, List<String> l2)
+        {
+            foreach (NamedValue n in l1)
+            {
+                if (l2.Contains(n.value))
+                {
+                    return n;
+                }
+            }
+            return null;
+        }
         //Méthode utilisée pour tester une regGuess entière.
         public static List<WeightedKey> regGuessTest(RegGuess r)
         {
             List<WeightedKey> result = new List<WeightedKey>();
             foreach (NamedValue nv in r.getValues())
             {
-                if (namedValueTest(nv) >= 70)
+                if (namedValueTest(nv) >= 60 )
                 {
                     WeightedKey k = new WeightedKey(nv.value, namedValueTest(nv));
+                    if (!result.Contains(k)) 
                     result.Add(k);
                 }
             }
@@ -55,7 +81,13 @@ namespace ProjetLinxya
         //Méthode utilisée pour tester une chaîne, utilisant les méthodes de test privées.
         public static int keyTest(String s)
         {
-            if (s.Contains("-") || s.Contains(" ") && !s.Contains(".") && !s.Contains("\\"))
+            Regex r= new Regex("^(([A-Z]):)");
+            Regex date = new Regex("^[0-3]?[0-9]/[0-3]?[0-9]/(?:[0-9]{2})?[0-9]{2}$");
+            if (s.StartsWith("{")||r.Match(s).Success||date.Match(s).Success)
+            {
+                return 0;
+            }
+            else if (s.Contains("-") || s.Contains(" ") && !s.Contains(".") && !s.Contains("\\"))
             {
                 if (isBasicKey(s) == 1)
                 {
@@ -152,7 +184,7 @@ namespace ProjetLinxya
         //Méthode qui permet de renvoyer un coeff de probabilité pour les chaines sans espace
         private static int isKeyBloc(String toTest)
         {
-            if (toTest.Contains("\\") || toTest.Contains(".") || toTest.Contains(" ") || toTest.Contains("_") || toTest.Length < 4)
+            if (toTest.Contains("\\") || toTest.Contains(".") || toTest.Contains(" ") || toTest.Contains("_") || toTest.Length < 7 || toTest.StartsWith("{"))
             {
                 return 0;
             }
@@ -200,8 +232,19 @@ namespace ProjetLinxya
             }
             return back;
         }
-
-
+        //Méthode qui crée les noms décoposés des logiciels en conservant leurs noms.
+        public static List<NamedValue> SplitStringListAndKeep(List<String> ls)
+        {
+            List<NamedValue> back = new List<NamedValue>();
+            foreach (String s1 in ls)
+            {
+                foreach (String s2 in s1.Split(' '))
+                {
+                    back.Add(new NamedValue(s1,s2));
+                }
+            }
+            return back;
+        }
         //Méthode de tri des String a comparer
         public static List<String> lSort(List<String> l)
         {

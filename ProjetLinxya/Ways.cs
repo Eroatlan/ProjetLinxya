@@ -8,13 +8,15 @@ namespace ProjetLinxya
 {
     public class Ways
     {
+        //La classe ways permet d'acéder a la base de données des chemins d'accès déjà connus.
         private Dictionary<String, PathValue> dico;
 
         //Initialise un dictionnaire avec le fichiers Ways.txt
         public Ways()
         {
             dico = new Dictionary<string, PathValue>();
-            String[] ways = System.IO.File.ReadAllLines(@"ways.txt");
+            //Doit être redéfini avec l'adresse internet ( et l'éventuel cryptage du fichier ).
+            String[] ways = System.IO.File.ReadAllLines(@"C:\Users\Thomas\git\ProjetLinxya\ProjetLinxya\ways.txt");
             foreach (String s in ways)
             {
                 String[] d = s.Split(';');
