@@ -116,7 +116,9 @@ namespace ProjetLinxya
             {
                 if (d.ContainsKey(s.getName()))
                 {
-                    s.addKey(r.readValue(d[s.getName()]), 100);
+                    String tmp = r.readValue(d[s.getName()]);
+                    if (!tmp.Equals(""))
+                        s.addKey(r.readValue(d[s.getName()]), 100);
                 }
             }
         }
