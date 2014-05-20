@@ -59,8 +59,16 @@ namespace ProjetLinxya
             {
                 if (namedValueTest(nv) >= 60)
                 {
+                    int i = 0;
                     WeightedKey k = new WeightedKey(nv.value, namedValueTest(nv));
-                    if (!result.Contains(k))
+                    foreach (WeightedKey v in result)
+                    {
+                        if (v.getValue().Equals(nv.value))
+                        {
+                            i=1;
+                        }
+                    }
+                    if( i ==0 )
                         result.Add(k);
                 }
             }
