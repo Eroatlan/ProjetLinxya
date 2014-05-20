@@ -83,7 +83,7 @@ namespace ProjetLinxya
         {
             Regex r= new Regex("^(([A-Z]):)");
             Regex date = new Regex("^[0-3]?[0-9]/[0-3]?[0-9]/(?:[0-9]{2})?[0-9]{2}$");
-            if (s.StartsWith("{")||r.Match(s).Success||date.Match(s).Success)
+            if (s.StartsWith("{")||r.Match(s).Success||date.Match(s).Success || s.StartsWith("http:"))
             {
                 return 0;
             }
