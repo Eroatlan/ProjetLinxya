@@ -14,14 +14,16 @@ namespace ProjetLinxya
         //Initialise un dictionnaire avec le fichiers Ways.txt
         public Ways()
         {
-            dico = new Dictionary<string, PathValue>();
+            dico = new Dictionary<String, PathValue>();
             //Doit être redéfini avec l'adresse internet ( et l'éventuel cryptage du fichier ).
-            String[] ways = System.IO.File.ReadAllLines(@"ways.txt");
+            String[] ways = System.IO.File.ReadAllLines(@"C:\Users\Thomas\Desktop\Pro\Visual\ListingAppLinxya\ConsoleApplication1\ways.txt");
             foreach (String s in ways)
             {
                 String[] d = s.Split(';');
-                PathValue p = new PathValue(d[1], d[2]);
-                dico.Add(d[0], p);
+                PathValue p = new PathValue(d[2], d[3]);
+                //La namedValue a pour nom le logiciel, et pour value la version.
+                String n = d[0] + " - " + d[1];
+                dico.Add(n, p);
             }
 
         }

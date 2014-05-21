@@ -114,11 +114,13 @@ namespace ProjetLinxya
 
             foreach (Software s in list)
             {
-                if (d.ContainsKey(s.getName()))
+                String n = s.getName() + " - " + s.getVersion();
+                if (d.ContainsKey(n))
                 {
-                    String tmp = r.readValue(d[s.getName()]);
+                    Console.WriteLine(s.getName());
+                    String tmp = r.readValue(d[n]);
                     if (!tmp.Equals(""))
-                        s.addKey(r.readValue(d[s.getName()]), 100);
+                        s.addKey(r.readValue(d[n]), 100);
                 }
             }
         }
