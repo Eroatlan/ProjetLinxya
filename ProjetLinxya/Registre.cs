@@ -15,7 +15,6 @@ namespace ProjetLinxya
     {
         //La classe registre permet les différents accès au registre.
         private RegistryKey myRegKey = Registry.LocalMachine;
-        List<String> toAvoid;
 
         public Registre()
         {
